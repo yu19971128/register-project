@@ -23,6 +23,10 @@ func Setup(db *sql.DB) *gin.Engine {
 	scheduleSvc := service.NewScheduleService(scheduleRepo)
 	scheduleHandler := handler.NewScheduleHandler(scheduleSvc)
 
+	orderRepo := repo.NewOrderRepository(db)
+	regSvc := service.NewRegistrationService(db, patientRepo, scheduleRepo, orderRepo)
+	regHandler := handler.NewRegistrationHandler(regSvc)
+
 	// H5 API group — visitor phone auth
 	h5 := r.Group("/api/v1")
 	h5.Use(middleware.VisitorPhone())
@@ -34,6 +38,9 @@ func Setup(db *sql.DB) *gin.Engine {
 
 	h5.GET("/schedules", scheduleHandler.List)
 	h5.GET("/schedules/:id", scheduleHandler.Get)
+
+	h5.POST("/registrations", regHandler.Submit)
+	h5.GET("/registrations/ticket/:order_no", regHandler.GetTicket)
 
 	// Admin API group — JWT auth
 	admin := r.Group("/api/v1/admin")
