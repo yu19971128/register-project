@@ -33,10 +33,10 @@
 
 ## 状态流转
 - [x] 规划中
-- [ ] 开发中
-- [ ] 审查中
-- [ ] 测试中
-- [ ] 已完成
+- [x] 开发中
+- [x] 审查中
+- [x] 测试中
+- [x] 已完成
 
 ## 原子任务清单（🔴 实现前必须确认，确认后冻结）
 
@@ -46,15 +46,15 @@
 
 | 序号 | 原子任务 ID | 任务名称 | 类型 | 输入设计文档 | 输出代码文件 | 优先级 | 状态 |
 |------|------------|---------|------|-------------|-------------|--------|------|
-| 1 | atom-001 | 创建 orders 表迁移与模型 | db | `docs/05-database/schemas/registration.md` | `backend/migrations/003_create_orders.sql` + `backend/models/order.go` | P2 | ⏳ 待实现 |
-| 2 | atom-002 | 实现 OrderRepository | repo | `docs/02-modules/registration/README.md` + `docs/05-database/schemas/registration.md` | `backend/repo/order_repo.go` + `order_repo_test.go` | P2 | ⏳ 待实现 |
-| 3 | atom-003 | 实现 RegistrationService 挂号业务逻辑 | svc | `docs/02-modules/registration/README.md` + `docs/06-api/registration.md` | `backend/service/registration_service.go` + `registration_service_test.go` | P2 | ⏳ 待实现 |
-| 4 | atom-004 | 实现 RegistrationHandler REST API | api | `docs/06-api/registration.md` | `backend/handler/registration_handler.go` + `registration_handler_test.go` | P2 | ⏳ 待实现 |
-| 5 | atom-005 | 在路由中注册挂号接口 | cfg | `docs/06-api/registration.md` + `docs/03-architecture/README.md` | `backend/router/router.go`（追加注册） | P2 | ⏳ 待实现 |
-| 6 | atom-006 | 实现 H5 号源浏览页 | page | `docs/04-frontend/features/registration.md` | `frontend/h5/pages/RegisterPage.tsx` | P2 | ⏳ 待实现 |
-| 7 | atom-007 | 实现 H5 挂号确认页 | page | `docs/04-frontend/features/registration.md` | `frontend/h5/pages/RegisterConfirmPage.tsx` | P2 | ⏳ 待实现 |
-| 8 | atom-008 | 实现 H5 挂号凭证页 | page | `docs/04-frontend/features/registration.md` | `frontend/h5/pages/RegisterTicketPage.tsx` | P2 | ⏳ 待实现 |
-| 9 | atom-009 | 当天挂号模块集成测试 | test | 全部设计文档 | `backend/tests/registration_integration_test.go` | P2 | ⏳ 待实现 |
+| 1 | atom-001 | 创建 orders 表迁移与模型 | db | `docs/05-database/schemas/registration.md` | `backend/migrations/003_create_orders.sql` + `backend/models/order.go` | P2 | ✅ 已完成 |
+| 2 | atom-002 | 实现 OrderRepository | repo | `docs/02-modules/registration/README.md` + `docs/05-database/schemas/registration.md` | `backend/repo/order_repo.go` + `order_repo_test.go` | P2 | ✅ 已完成 |
+| 3 | atom-003 | 实现 RegistrationService 挂号业务逻辑 | svc | `docs/02-modules/registration/README.md` + `docs/06-api/registration.md` | `backend/service/registration_service.go` + `registration_service_test.go` | P2 | ✅ 已完成 |
+| 4 | atom-004 | 实现 RegistrationHandler REST API | api | `docs/06-api/registration.md` | `backend/handler/registration_handler.go` + `registration_handler_test.go` | P2 | ✅ 已完成 |
+| 5 | atom-005 | 在路由中注册挂号接口 | cfg | `docs/06-api/registration.md` + `docs/03-architecture/README.md` | `backend/router/router.go`（追加注册） | P2 | ✅ 已完成 |
+| 6 | atom-006 | 实现 H5 号源浏览页 | page | `docs/04-frontend/features/registration.md` | `frontend/h5/pages/RegisterPage.tsx` | P2 | ✅ 已完成 |
+| 7 | atom-007 | 实现 H5 挂号确认页 | page | `docs/04-frontend/features/registration.md` | `frontend/h5/pages/RegisterConfirmPage.tsx` | P2 | ✅ 已完成 |
+| 8 | atom-008 | 实现 H5 挂号凭证页 | page | `docs/04-frontend/features/registration.md` | `frontend/h5/pages/RegisterTicketPage.tsx` | P2 | ✅ 已完成 |
+| 9 | atom-009 | 当天挂号模块集成测试 | test | 全部设计文档 | `backend/tests/registration_integration_test.go` | P2 | ✅ 已完成 |
 
 **状态图例**：
 - ⏳ 待确认 — 清单产出后等待用户确认
