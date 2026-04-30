@@ -24,6 +24,10 @@ func setupRouter(t *testing.T) *gin.Engine {
 	if err := db.ExecMigration(database, string(b)); err != nil {
 		t.Fatalf("migrate: %v", err)
 	}
+	b2, _ := os.ReadFile("../migrations/002_create_schedules.sql")
+	if err := db.ExecMigration(database, string(b2)); err != nil {
+		t.Fatalf("migrate schedules: %v", err)
+	}
 	return Setup(database)
 }
 
@@ -103,5 +107,38 @@ func TestRouter_Admin_ListWithToken(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Fatalf("status = %d, want 200, body: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestRouter_ScheduleRoutes_Registered(t *testing.T) {
+	r := setupRouter(t)
+	body := `{"date":"2026-04-29","department":"内科","doctor_name":"王医生","start_time":"09:00","end_time":"10:00","total_quota":20}`
+
+	// H5 list schedules
+	req, _ := http.NewRequest("GET", "/api/v1/schedules", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("list schedules status = %d, want 200", w.Code)
+	}
+
+	// Admin create schedule
+	token, _ := middleware.GenerateToken("admin-1")
+	req, _ = http.NewRequest("POST", "/api/v1/admin/schedules", bytes.NewBufferString(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token)
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("create schedule status = %d, want 200, body: %s", w.Code, w.Body.String())
+	}
+
+	// Admin list schedules
+	req, _ = http.NewRequest("GET", "/api/v1/admin/schedules", nil)
+	req.Header.Set("Authorization", "Bearer "+token)
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("admin list schedules status = %d, want 200", w.Code)
 	}
 }
