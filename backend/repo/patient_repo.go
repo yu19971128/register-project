@@ -41,6 +41,19 @@ func (r *PatientRepository) GetByID(id int64) (*models.Patient, error) {
 	return p, nil
 }
 
+func (r *PatientRepository) GetByIDWithVisitorPhone(id int64) (*models.Patient, error) {
+	row := r.db.QueryRow(`SELECT id, name, id_card, phone, gender, age, address, visitor_phone, created_at, updated_at FROM patients WHERE id = ?`, id)
+	p := &models.Patient{}
+	err := row.Scan(&p.ID, &p.Name, &p.IDCard, &p.Phone, &p.Gender, &p.Age, &p.Address, &p.VisitorPhone, &p.CreatedAt, &p.UpdatedAt)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("get patient with vp: %w", err)
+	}
+	return p, nil
+}
+
 func (r *PatientRepository) ListByVisitorPhone(vp string, offset, limit int) ([]*models.Patient, int, error) {
 	var total int
 	if err := r.db.QueryRow(`SELECT COUNT(*) FROM patients WHERE visitor_phone = ?`, vp).Scan(&total); err != nil {
