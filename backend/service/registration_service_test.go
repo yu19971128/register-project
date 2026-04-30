@@ -3,6 +3,7 @@ package service
 import (
 	"os"
 	"testing"
+	"time"
 
 	"clinic/db"
 	"clinic/models"
@@ -20,6 +21,8 @@ func setupRegistrationSvc(t *testing.T) (*RegistrationService, func()) {
 	require.NoError(t, db.ExecMigration(database, string(b2)))
 	b3, _ := os.ReadFile("../migrations/003_create_orders.sql")
 	require.NoError(t, db.ExecMigration(database, string(b3)))
+	b4, _ := os.ReadFile("../migrations/004_alter_orders.sql")
+	require.NoError(t, db.ExecMigration(database, string(b4)))
 
 	patientRepo := repo.NewPatientRepository(database)
 	scheduleRepo := repo.NewScheduleRepository(database)
@@ -138,11 +141,9 @@ func TestRegistrationService_GetTicket_NotFound(t *testing.T) {
 }
 
 func TestRegistrationService_GenerateOrderNo(t *testing.T) {
-	svc, cleanup := setupRegistrationSvc(t)
-	defer cleanup()
-
-	no1 := svc.generateOrderNo("2026-04-29")
-	no2 := svc.generateOrderNo("2026-04-29")
+	no1 := generateOrderNo("2026-04-29")
+	time.Sleep(time.Millisecond)
+	no2 := generateOrderNo("2026-04-29")
 	assert.NotEqual(t, no1, no2)
 	assert.Contains(t, no1, "20260429")
 }

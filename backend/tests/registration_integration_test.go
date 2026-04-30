@@ -32,6 +32,10 @@ func setupRegistrationIntegration(t *testing.T) *httptest.Server {
 	if err := db.ExecMigration(database, string(b3)); err != nil {
 		t.Fatalf("migrate orders: %v", err)
 	}
+	b4, _ := os.ReadFile("../migrations/004_alter_orders.sql")
+	if err := db.ExecMigration(database, string(b4)); err != nil {
+		t.Fatalf("migrate orders alter: %v", err)
+	}
 	r := router.Setup(database)
 	return httptest.NewServer(r)
 }

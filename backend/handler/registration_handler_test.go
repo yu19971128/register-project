@@ -27,6 +27,8 @@ func setupRegistrationHandler(t *testing.T) (*RegistrationHandler, *gin.Engine, 
 	require.NoError(t, db.ExecMigration(database, string(b2)))
 	b3, _ := os.ReadFile("../migrations/003_create_orders.sql")
 	require.NoError(t, db.ExecMigration(database, string(b3)))
+	b4, _ := os.ReadFile("../migrations/004_alter_orders.sql")
+	require.NoError(t, db.ExecMigration(database, string(b4)))
 
 	patientRepo := repo.NewPatientRepository(database)
 	scheduleRepo := repo.NewScheduleRepository(database)

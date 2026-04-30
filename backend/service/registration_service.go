@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"sync"
 	"time"
 
 	"clinic/models"
@@ -16,8 +15,6 @@ type RegistrationService struct {
 	patientRepo *repo.PatientRepository
 	scheduleRepo *repo.ScheduleRepository
 	orderRepo    *repo.OrderRepository
-	mu           sync.Mutex
-	seq          int
 }
 
 func NewRegistrationService(db *sql.DB, patientRepo *repo.PatientRepository, scheduleRepo *repo.ScheduleRepository, orderRepo *repo.OrderRepository) *RegistrationService {
@@ -122,7 +119,7 @@ func (s *RegistrationService) SubmitRegistration(scheduleID, patientID int64, vi
 	}
 
 	// Generate order number
-	orderNo := s.generateOrderNo(schedule.Date)
+	orderNo := generateOrderNo(schedule.Date)
 
 	// Create order within transaction
 	_, err = tx.Exec(
@@ -207,10 +204,7 @@ func (s *RegistrationService) GetTicket(orderNo, visitorPhone string) (*TicketRe
 	}, nil
 }
 
-func (s *RegistrationService) generateOrderNo(date string) string {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.seq++
+func generateOrderNo(date string) string {
 	dateStr := strings.ReplaceAll(date, "-", "")
-	return fmt.Sprintf("GH%s%04d", dateStr, s.seq)
+	return fmt.Sprintf("GH%s%012d", dateStr, time.Now().UnixNano()%1000000000000)
 }

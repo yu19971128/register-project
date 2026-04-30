@@ -3,8 +3,6 @@ package service
 import (
 	"database/sql"
 	"fmt"
-	"strings"
-	"sync"
 	"time"
 
 	"clinic/models"
@@ -16,8 +14,6 @@ type OrderService struct {
 	orderRepo    *repo.OrderRepository
 	scheduleRepo *repo.ScheduleRepository
 	patientRepo  *repo.PatientRepository
-	mu           sync.Mutex
-	seq          int
 }
 
 func NewOrderService(db *sql.DB, orderRepo *repo.OrderRepository, scheduleRepo *repo.ScheduleRepository, patientRepo *repo.PatientRepository) *OrderService {
@@ -275,7 +271,7 @@ func (s *OrderService) Change(id, newScheduleID int64, isAdmin bool, visitorPhon
 		return nil, fmt.Errorf("新号源余量已为 0")
 	}
 
-	newOrderNo := s.generateOrderNo(newSchedule.Date)
+	newOrderNo := generateOrderNo(newSchedule.Date)
 	orderRes, err := tx.Exec(
 		"INSERT INTO orders (order_no, schedule_id, patient_id, visitor_phone, status) VALUES (?, ?, ?, ?, ?)",
 		newOrderNo, newScheduleID, oldOrder.PatientID, oldOrder.VisitorPhone, "confirmed",
@@ -334,14 +330,6 @@ func (s *OrderService) Change(id, newScheduleID int64, isAdmin bool, visitorPhon
 	}
 
 	return result, nil
-}
-
-func (s *OrderService) generateOrderNo(date string) string {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.seq++
-	dateStr := strings.ReplaceAll(date, "-", "")
-	return fmt.Sprintf("GH%s%04d", dateStr, s.seq)
 }
 
 func canCancelOrder(order *models.Order, schedule *models.Schedule) bool {
