@@ -18,7 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupRegistrationHandler(t *testing.T) (*RegistrationHandler, *gin.Engine) {
+func setupRegistrationHandler(t *testing.T) (*RegistrationHandler, *gin.Engine, *sql.DB) {
 	database, err := db.Open(":memory:")
 	require.NoError(t, err)
 	b1, _ := os.ReadFile("../migrations/001_create_patients.sql")
@@ -36,9 +36,15 @@ func setupRegistrationHandler(t *testing.T) (*RegistrationHandler, *gin.Engine) 
 
 	gin.SetMode(gin.TestMode)
 	g := gin.New()
+	g.Use(func(c *gin.Context) {
+		if vp := c.GetHeader("X-Visitor-Phone"); vp != "" {
+			c.Set("visitor_phone", vp)
+		}
+		c.Next()
+	})
 	g.POST("/api/v1/registrations", h.Submit)
 	g.GET("/api/v1/registrations/ticket/:order_no", h.GetTicket)
-	return h, g
+	return h, g, database
 }
 
 func seedForRegistration(t *testing.T, database *sql.DB) (int64, int64) {
@@ -57,7 +63,8 @@ func seedForRegistration(t *testing.T, database *sql.DB) (int64, int64) {
 }
 
 func TestRegistrationHandler_Submit_And_GetTicket(t *testing.T) {
-	_, r := setupRegistrationHandler(t)
+	_, r, database := setupRegistrationHandler(t)
+	seedForRegistration(t, database)
 
 	body, _ := json.Marshal(map[string]interface{}{
 		"schedule_id": 1, "patient_id": 1, "visitor_phone": "13800138000",
@@ -67,32 +74,31 @@ func TestRegistrationHandler_Submit_And_GetTicket(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Visitor-Phone", "13800138000")
 	r.ServeHTTP(w, req)
-	assert.Equal(t, 200, w.Code)
+	if w.Code != 200 {
+		t.Fatalf("submit status = %d, body: %s", w.Code, w.Body.String())
+	}
 	var resp Response
 	_ = json.Unmarshal(w.Body.Bytes(), &resp)
-	var result struct {
-		OrderNo string `json:"order_no"`
-	}
-	json.Unmarshal(toJSON(resp.Data), &result)
-	assert.Contains(t, result.OrderNo, "GH")
+	resultMap, _ := resp.Data.(map[string]interface{})
+	orderNo, _ := resultMap["order_no"].(string)
+	assert.Contains(t, orderNo, "GH")
 
 	// Get ticket
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/api/v1/registrations/ticket/"+result.OrderNo, nil)
+	req, _ = http.NewRequest("GET", "/api/v1/registrations/ticket/"+orderNo, nil)
 	req.Header.Set("X-Visitor-Phone", "13800138000")
 	r.ServeHTTP(w, req)
-	assert.Equal(t, 200, w.Code)
+	if w.Code != 200 {
+		t.Fatalf("ticket status = %d, body: %s", w.Code, w.Body.String())
+	}
 	var ticketResp Response
 	_ = json.Unmarshal(w.Body.Bytes(), &ticketResp)
-	var ticket struct {
-		PatientName string `json:"patient_name"`
-	}
-	json.Unmarshal(toJSON(ticketResp.Data), &ticket)
-	assert.Equal(t, "张三", ticket.PatientName)
+	ticketMap, _ := ticketResp.Data.(map[string]interface{})
+	assert.Equal(t, "张三", ticketMap["patient_name"])
 }
 
 func TestRegistrationHandler_Submit_InvalidSchedule(t *testing.T) {
-	_, r := setupRegistrationHandler(t)
+	_, r, _ := setupRegistrationHandler(t)
 	body, _ := json.Marshal(map[string]interface{}{
 		"schedule_id": 9999, "patient_id": 1, "visitor_phone": "13800138000",
 	})
