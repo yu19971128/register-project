@@ -23,9 +23,23 @@ export interface Patient {
   updated_at?: string
 }
 
+export interface Schedule {
+  id: number
+  date: string
+  department: string
+  doctor_name: string
+  start_time: string
+  end_time: string
+  total_quota: number
+  remaining: number
+  status: string
+  created_at?: string
+  updated_at?: string
+}
+
 export interface ListResp {
   total: number
-  list: Patient[]
+  list: any[]
 }
 
 export interface ApiResp<T> {
@@ -47,7 +61,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 export const patientApi = {
-  list(keyword?: string, page = 1, pageSize = 10): Promise<ListResp> {
+  list(keyword?: string, page = 1, pageSize = 10): Promise<{ total: number; list: Patient[] }> {
     const qs = new URLSearchParams({ page: String(page), page_size: String(pageSize) })
     if (keyword) qs.set('keyword', keyword)
     return request(`/patients?${qs.toString()}`)
@@ -60,5 +74,24 @@ export const patientApi = {
   },
   remove(id: number): Promise<void> {
     return request(`/patients/${id}`, { method: 'DELETE' })
+  },
+}
+
+export const scheduleApi = {
+  list(date: string, page = 1, pageSize = 10): Promise<{ total: number; list: Schedule[] }> {
+    const qs = new URLSearchParams({ page: String(page), page_size: String(pageSize), date })
+    return request(`/schedules?${qs.toString()}`)
+  },
+  get(id: number): Promise<Schedule> {
+    return request(`/schedules/${id}`)
+  },
+  create(data: Partial<Schedule>): Promise<Schedule> {
+    return request(`/schedules`, { method: 'POST', body: JSON.stringify(data) })
+  },
+  update(id: number, data: Partial<Schedule>): Promise<void> {
+    return request(`/schedules/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+  },
+  remove(id: number): Promise<void> {
+    return request(`/schedules/${id}`, { method: 'DELETE' })
   },
 }
