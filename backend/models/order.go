@@ -9,6 +9,10 @@ type Order struct {
 	PatientID    int64     `json:"patient_id"`
 	VisitorPhone string    `json:"visitor_phone"`
 	Status       string    `json:"status"`
+	CancelReason string    `json:"cancel_reason,omitempty"`
+	CancelledAt  *time.Time `json:"cancelled_at,omitempty"`
+	CompletedAt  *time.Time `json:"completed_at,omitempty"`
+	OperatedBy   string    `json:"operated_by,omitempty"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
