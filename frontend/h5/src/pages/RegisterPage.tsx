@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { NavBar, Tabs, Card, Button, Badge, Toast } from 'antd-mobile'
+import { NavBar, Tabs, Card, Button, Badge, Toast, Modal, Input } from 'antd-mobile'
 import { scheduleApi, type Schedule } from '../api/client'
 import dayjs from 'dayjs'
 
@@ -9,21 +9,39 @@ export default function RegisterPage() {
   const [schedules, setSchedules] = useState<Schedule[]>([])
   const [departments, setDepartments] = useState<string[]>(['全部'])
   const [activeDept, setActiveDept] = useState('全部')
+  const [visitorPhone, setVisitorPhone] = useState('')
+  const [phoneModalVisible, setPhoneModalVisible] = useState(false)
   const today = dayjs().format('YYYY-MM-DD')
 
   useEffect(() => {
-    loadSchedules()
+    const vp = localStorage.getItem('visitor_phone') || ''
+    if (!vp) {
+      setPhoneModalVisible(true)
+    } else {
+      setVisitorPhone(vp)
+      loadSchedules()
+    }
   }, [])
 
   const loadSchedules = async () => {
     try {
       const res = await scheduleApi.list(today)
-      setSchedules(res.list)
-      const depts = Array.from(new Set(res.list.map(s => s.department)))
+      setSchedules(res.list || [])
+      const depts = Array.from(new Set((res.list || []).map(s => s.department)))
       setDepartments(['全部', ...depts])
     } catch (e: any) {
       Toast.show({ content: e.message || '加载失败', icon: 'fail' })
     }
+  }
+
+  const handleSavePhone = () => {
+    if (!visitorPhone || !/^1[3-9]\d{9}$/.test(visitorPhone)) {
+      Toast.show({ content: '请输入正确的手机号', icon: 'fail' })
+      return
+    }
+    localStorage.setItem('visitor_phone', visitorPhone)
+    setPhoneModalVisible(false)
+    loadSchedules()
   }
 
   const filtered = activeDept === '全部' ? schedules : schedules.filter(s => s.department === activeDept)
@@ -60,6 +78,29 @@ export default function RegisterPage() {
           <div className="text-center text-gray-400 py-10">暂无号源</div>
         )}
       </div>
+
+      <Modal
+        visible={phoneModalVisible}
+        title="请输入您的手机号"
+        content={
+          <Input
+            placeholder="请输入手机号"
+            value={visitorPhone}
+            onChange={(v) => setVisitorPhone(v)}
+            maxLength={11}
+          />
+        }
+        closeOnAction
+        onClose={() => {}}
+        actions={[
+          {
+            key: 'confirm',
+            text: '确定',
+            primary: true,
+            onClick: handleSavePhone,
+          },
+        ]}
+      />
     </div>
   )
 }

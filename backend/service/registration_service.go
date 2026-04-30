@@ -88,6 +88,11 @@ func (s *RegistrationService) SubmitRegistration(scheduleID, patientID int64, vi
 	if patient == nil {
 		return nil, fmt.Errorf("就诊人不存在")
 	}
+	// 兼容历史数据：若就诊人未绑定访客手机号，自动绑定当前访客
+	if patient.VisitorPhone == "" {
+		patient.VisitorPhone = visitorPhone
+		_ = s.patientRepo.UpdateVisitorPhone(patientID, visitorPhone)
+	}
 	if patient.VisitorPhone != visitorPhone {
 		return nil, fmt.Errorf("就诊人不属于当前访客")
 	}

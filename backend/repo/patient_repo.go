@@ -163,6 +163,14 @@ func (r *PatientRepository) Delete(id int64) error {
 	return nil
 }
 
+func (r *PatientRepository) UpdateVisitorPhone(id int64, vp string) error {
+	_, err := r.db.Exec(`UPDATE patients SET visitor_phone = ? WHERE id = ?`, vp, id)
+	if err != nil {
+		return fmt.Errorf("update visitor phone: %w", err)
+	}
+	return nil
+}
+
 func (r *PatientRepository) HasActiveOrders(patientID int64) (bool, error) {
 	var count int
 	// 依赖 orders 表，若不存在则视为无关联订单

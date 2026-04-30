@@ -23,11 +23,15 @@ export default function PatientEditPage() {
   const onSubmit = async (values: any) => {
     setLoading(true)
     try {
+      const payload = { ...values }
+      if (payload.age !== undefined && payload.age !== '') {
+        payload.age = Number(payload.age)
+      }
       if (isEdit) {
-        await patientApi.update(Number(id), values)
+        await patientApi.update(Number(id), payload)
         Toast.show({ content: '更新成功', position: 'bottom' })
       } else {
-        await patientApi.create(values)
+        await patientApi.create(payload)
         Toast.show({ content: '创建成功', position: 'bottom' })
       }
       navigate('/h5/patients')

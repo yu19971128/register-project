@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { List, NavBar, Button, Dialog, Toast } from 'antd-mobile'
+import { List, NavBar, Button, Dialog, Toast, Empty } from 'antd-mobile'
 import { patientApi, type Patient } from '../api/client'
 
 export default function PatientListPage() {
@@ -10,7 +10,7 @@ export default function PatientListPage() {
   const load = async () => {
     try {
       const res = await patientApi.list()
-      setPatients(res.list)
+      setPatients(res.list || [])
     } catch (e: any) {
       Toast.show({ content: e.message || '加载失败', position: 'bottom' })
     }
@@ -43,21 +43,30 @@ export default function PatientListPage() {
           添加就诊人
         </Button>
       </div>
-      <List>
-        {patients.map((p) => (
-          <List.Item
-            key={p.id}
-            title={p.name}
-            description={`${p.phone} · ${p.gender === 'male' ? '男' : p.gender === 'female' ? '女' : '未知'} · ${p.age ?? '-'}岁`}
-            onClick={() => navigate(`/h5/patients/edit/${p.id}`)}
-            extra={
-              <Button size="mini" color="danger" onClick={(e) => { e.stopPropagation(); handleDelete(p) }}>
-                删除
-              </Button>
-            }
-          />
-        ))}
-      </List>
+      {!patients?.length ? (
+        <div className="flex flex-col items-center justify-center pt-20">
+          <Empty description="暂无就诊人" />
+          <Button color="primary" className="mt-6 w-48" onClick={() => navigate('/h5/patients/edit')}>
+            添加就诊人
+          </Button>
+        </div>
+      ) : (
+        <List>
+          {patients.map((p) => (
+            <List.Item
+              key={p.id}
+              title={p.name}
+              description={`${p.phone} · ${p.gender === 'male' ? '男' : p.gender === 'female' ? '女' : '未知'} · ${p.age ?? '-'}岁`}
+              onClick={() => navigate(`/h5/patients/edit/${p.id}`)}
+              extra={
+                <Button size="mini" color="danger" onClick={(e) => { e.stopPropagation(); handleDelete(p) }}>
+                  删除
+                </Button>
+              }
+            />
+          ))}
+        </List>
+      )}
     </div>
   )
 }

@@ -14,6 +14,7 @@ import (
 func Setup(db *sql.DB) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
+	r.Use(middleware.CORS())
 
 	patientRepo := repo.NewPatientRepository(db)
 	patientSvc := service.NewPatientService(patientRepo)
@@ -49,6 +50,9 @@ func Setup(db *sql.DB) *gin.Engine {
 	h5.GET("/orders/:id", orderHandler.Get)
 	h5.PUT("/orders/:id/cancel", orderHandler.Cancel)
 	h5.PUT("/orders/:id/change", orderHandler.Change)
+
+	// Admin login — no auth required
+	r.POST("/api/v1/admin/login", handler.AdminLogin)
 
 	// Admin API group — JWT auth
 	admin := r.Group("/api/v1/admin")
