@@ -11,10 +11,10 @@
 实现就诊人档案的全生命周期管理，覆盖移动端（H5）患者自助管理和管理端（PC）全局管理。引用 `docs/02-modules/patient/README.md` 中的职责描述。
 
 ## 验收标准（AC）
-- [ ] AC1：移动端可完成就诊人的添加、编辑、删除，列表展示脱敏信息
-- [ ] AC2：管理端可查看全部就诊人列表，支持按姓名/手机号/身份证号搜索
-- [ ] AC3：身份证号/手机号加密存储，查询时脱敏展示
-- [ ] AC4：存在未完成挂号的就诊人禁止删除，返回明确错误提示
+- [x] AC1：移动端可完成就诊人的添加、编辑、删除，列表展示脱敏信息
+- [x] AC2：管理端可查看全部就诊人列表，支持按姓名/手机号/身份证号搜索
+- [x] AC3：身份证号/手机号加密存储，查询时脱敏展示
+- [x] AC4：存在未完成挂号的就诊人禁止删除，返回明确错误提示
 
 ## 技术约束
 - 后端语言/框架：Go + Gin
@@ -33,10 +33,10 @@
 
 ## 状态流转
 - [x] 规划中
-- [ ] 开发中
-- [ ] 审查中
-- [ ] 测试中
-- [ ] 已完成
+- [x] 开发中
+- [x] 审查中
+- [x] 测试中
+- [x] 已完成
 
 ## 原子任务清单（🔴 实现前必须确认，确认后冻结）
 
@@ -46,16 +46,16 @@
 
 | 序号 | 原子任务 ID | 任务名称 | 类型 | 输入设计文档 | 输出代码文件 | 优先级 | 状态 |
 |------|------------|---------|------|-------------|-------------|--------|------|
-| 1 | atom-001 | 创建 patients 表迁移与模型 | db | `docs/05-database/schemas/patient.md` | `backend/migrations/001_create_patients.sql` + `backend/models/patient.go` | P1 | ⏳ 待实现 |
-| 2 | atom-002 | 实现 PatientRepository CRUD | repo | `docs/02-modules/patient/README.md` + `docs/05-database/schemas/patient.md` | `backend/repo/patient_repo.go` + `patient_repo_test.go` | P1 | ⏳ 待实现 |
-| 3 | atom-003 | 实现 PatientService 业务逻辑 | svc | `docs/02-modules/patient/README.md` + `docs/06-api/patient.md` | `backend/service/patient_service.go` + `patient_service_test.go` | P1 | ⏳ 待实现 |
-| 4 | atom-004 | 实现 PatientHandler REST API | api | `docs/06-api/patient.md` | `backend/handler/patient_handler.go` + `patient_handler_test.go` | P1 | ⏳ 待实现 |
-| 5 | atom-005 | 配置路由与 JWT 中间件 | cfg | `docs/06-api/patient.md` + `docs/03-architecture/README.md` | `backend/router/router.go` + `backend/middleware/jwt.go` | P1 | ⏳ 待实现 |
-| 6 | atom-006 | 实现 H5 就诊人列表页 | page | `docs/04-frontend/features/patient.md` | `frontend/h5/pages/PatientListPage.tsx` | P1 | ⏳ 待实现 |
-| 7 | atom-007 | 实现 H5 添加/编辑就诊人页 | page | `docs/04-frontend/features/patient.md` | `frontend/h5/pages/PatientEditPage.tsx` | P1 | ⏳ 待实现 |
-| 8 | atom-008 | 实现管理端就诊人列表页 | page | `docs/04-frontend/features/patient.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/PatientListPage.tsx` | P1 | ⏳ 待实现 |
-| 9 | atom-009 | 实现管理端就诊人详情页 | page | `docs/04-frontend/features/patient.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/PatientDetailPage.tsx` | P1 | ⏳ 待实现 |
-| 10 | atom-010 | 就诊人模块集成测试 | test | 全部设计文档 | `backend/tests/patient_integration_test.go` | P1 | ⏳ 待实现 |
+| 1 | atom-001 | 创建 patients 表迁移与模型 | db | `docs/05-database/schemas/patient.md` | `backend/migrations/001_create_patients.sql` + `backend/models/patient.go` | P1 | ✅ 已完成 |
+| 2 | atom-002 | 实现 PatientRepository CRUD | repo | `docs/02-modules/patient/README.md` + `docs/05-database/schemas/patient.md` | `backend/repo/patient_repo.go` + `patient_repo_test.go` | P1 | ✅ 已完成 |
+| 3 | atom-003 | 实现 PatientService 业务逻辑 | svc | `docs/02-modules/patient/README.md` + `docs/06-api/patient.md` | `backend/service/patient_service.go` + `patient_service_test.go` | P1 | ✅ 已完成 |
+| 4 | atom-004 | 实现 PatientHandler REST API | api | `docs/06-api/patient.md` | `backend/handler/patient_handler.go` + `patient_handler_test.go` | P1 | ✅ 已完成 |
+| 5 | atom-005 | 配置路由与 JWT 中间件 | cfg | `docs/06-api/patient.md` + `docs/03-architecture/README.md` | `backend/router/router.go` + `backend/middleware/jwt.go` | P1 | ✅ 已完成 |
+| 6 | atom-006 | 实现 H5 就诊人列表页 | page | `docs/04-frontend/features/patient.md` | `frontend/h5/pages/PatientListPage.tsx` | P1 | ✅ 已完成 |
+| 7 | atom-007 | 实现 H5 添加/编辑就诊人页 | page | `docs/04-frontend/features/patient.md` | `frontend/h5/pages/PatientEditPage.tsx` | P1 | ✅ 已完成 |
+| 8 | atom-008 | 实现管理端就诊人列表页 | page | `docs/04-frontend/features/patient.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/PatientListPage.tsx` | P1 | ✅ 已完成 |
+| 9 | atom-009 | 实现管理端就诊人详情页 | page | `docs/04-frontend/features/patient.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/PatientDetailPage.tsx` | P1 | ✅ 已完成 |
+| 10 | atom-010 | 就诊人模块集成测试 | test | 全部设计文档 | `backend/tests/patient_integration_test.go` | P1 | ✅ 已完成 |
 
 **状态图例**：
 - ⏳ 待确认 — 清单产出后等待用户确认
