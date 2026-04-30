@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"clinic/db"
-	"clinic/models"
 	"clinic/repo"
 	"clinic/service"
 	"github.com/gin-gonic/gin"
@@ -178,12 +177,15 @@ func TestScheduleHandler_Update_LowerThanBooked(t *testing.T) {
 	_ = json.Unmarshal(w.Body.Bytes(), &createResp)
 	id := int64(createResp.Data.(map[string]interface{})["id"].(float64))
 
-	// Deduct
+	// Deduct twice so booked = 2
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest("POST", "/api/v1/schedules/"+jsonNum(id)+"/deduct", nil)
+	r.ServeHTTP(w, req)
 	w = httptest.NewRecorder()
 	req, _ = http.NewRequest("POST", "/api/v1/schedules/"+jsonNum(id)+"/deduct", nil)
 	r.ServeHTTP(w, req)
 
-	// Update to 1 should fail (booked = 1)
+	// Update to 1 should fail (booked = 2)
 	body, _ = json.Marshal(map[string]interface{}{"total_quota": 1})
 	w = httptest.NewRecorder()
 	req, _ = http.NewRequest("PUT", "/api/v1/schedules/"+jsonNum(id), bytes.NewReader(body))
