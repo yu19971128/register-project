@@ -3,7 +3,6 @@ package service
 import (
 	"os"
 	"testing"
-	"time"
 
 	"clinic/db"
 	"clinic/models"
@@ -142,8 +141,8 @@ func TestRegistrationService_GenerateOrderNo(t *testing.T) {
 	svc, cleanup := setupRegistrationSvc(t)
 	defer cleanup()
 
-	no1 := svc.generateOrderNo()
-	no2 := svc.generateOrderNo()
+	no1 := svc.generateOrderNo("2026-04-29")
+	no2 := svc.generateOrderNo("2026-04-29")
 	assert.NotEqual(t, no1, no2)
-	assert.Contains(t, no1, time.Now().Format("20060102"))
+	assert.Contains(t, no1, "20260429")
 }
