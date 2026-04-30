@@ -6,7 +6,7 @@
 
 | 功能点/需求 | feature_id | 优先级 | 需求文档 | 模块设计 | 前端设计 | 数据库设计 | API 文档 | 当前状态 | 任务拆解 | 备注 |
 |------------|------------|--------|----------|----------|----------|------------|----------|----------|----------|------|
-| 当天挂号系统 | F001 | P0 | docs/01-background/README.md | docs/02-modules/README.md | docs/04-frontend/features/patient.md, docs/04-frontend/features/schedule.md, docs/04-frontend/features/registration.md, docs/04-frontend/features/order.md | docs/05-database/schemas/patient.md, docs/05-database/schemas/schedule.md, docs/05-database/schemas/registration.md, docs/05-database/schemas/order.md | docs/06-api/README.md | 🧪 测试中 | TASK-001 ✅, TASK-002 ✅, TASK-003 ✅, TASK-004 ✅ | 含移动端H5+管理端PC；全部四个模块已实现，进入质量检查阶段 |
+| 当天挂号系统 | F001 | P0 | docs/01-background/README.md | docs/02-modules/README.md | docs/04-frontend/features/patient.md, docs/04-frontend/features/schedule.md, docs/04-frontend/features/registration.md, docs/04-frontend/features/order.md | docs/05-database/schemas/patient.md, docs/05-database/schemas/schedule.md, docs/05-database/schemas/registration.md, docs/05-database/schemas/order.md | docs/06-api/README.md | 🏁 已完成 | TASK-001 ✅, TASK-002 ✅, TASK-003 ✅, TASK-004 ✅ | 含移动端H5+管理端PC；全部四个模块已实现并发布 |
 
 ## 模块目录
 
