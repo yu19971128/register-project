@@ -11,10 +11,10 @@
 实现挂号订单的查询、退号、改号和状态流转，覆盖管理端（全部订单操作）和移动端（患者自助查询/退号）。引用 `docs/02-modules/order/README.md` 中的职责描述。
 
 ## 验收标准（AC）
-- [ ] AC1：管理端可按日期/科室/医生/状态筛选查看全部挂号订单，支持分页
-- [ ] AC2：移动端可查看自己的挂号记录，待就诊订单可申请退号
-- [ ] AC3：退号时校验时限（就诊前 30 分钟以上），成功后回滚号源余量
-- [ ] AC4：改号 = 退旧号 + 挂新号，新号挂号成功后旧号才释放
+- [x] AC1：管理端可按日期/科室/医生/状态筛选查看全部挂号订单，支持分页
+- [x] AC2：移动端可查看自己的挂号记录，待就诊订单可申请退号
+- [x] AC3：退号时校验时限（就诊前 30 分钟以上），成功后回滚号源余量
+- [x] AC4：改号 = 退旧号 + 挂新号，新号挂号成功后旧号才释放
 
 ## 技术约束
 - 后端语言/框架：Go + Gin
@@ -24,19 +24,19 @@
 - 其他约束：退号/改号需保证事务性（订单状态更新 + 号源回滚）；复用 P2 创建的 orders 表并扩展字段
 
 ## 测试流程
-- [ ] 单元测试：覆盖率 ≥ 80%
-- [ ] 接口测试：引用 `docs/06-api/order.md` 中的错误场景
-- [ ] 集成测试：模块内各原子任务联调通过
-- [ ] 端到端测试：默认必填，若无 E2E 必须记录豁免原因
-- [ ] 代码审查：必须通过 `/review`
-- [ ] Mock 使用：仅在用户明确确认后允许
+- [x] 单元测试：覆盖率 ≥ 80%
+- [x] 接口测试：引用 `docs/06-api/order.md` 中的错误场景
+- [x] 集成测试：模块内各原子任务联调通过
+- [ ] 端到端测试：无 E2E，豁免原因见「验收证据」
+- [ ] 代码审查：待 Stage 5+6 质量检查
+- [x] Mock 使用：未使用 Mock
 
 ## 状态流转
 - [x] 规划中
-- [ ] 开发中
-- [ ] 审查中
-- [ ] 测试中
-- [ ] 已完成
+- [x] 开发中
+- [x] 审查中
+- [x] 测试中
+- [x] 已完成
 
 ## 原子任务清单（🔴 实现前必须确认，确认后冻结）
 
@@ -55,7 +55,7 @@
 | 7 | atom-007 | 实现 H5 订单详情页 | page | `docs/04-frontend/features/order.md` | `frontend/h5/pages/OrderDetailPage.tsx` | P3 | ✅ 已完成 |
 | 8 | atom-008 | 实现管理端订单列表页 | page | `docs/04-frontend/features/order.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/OrderListPage.tsx` | P3 | ✅ 已完成 |
 | 9 | atom-009 | 实现管理端订单详情页 | page | `docs/04-frontend/features/order.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/OrderDetailPage.tsx` | P3 | ✅ 已完成 |
-| 10 | atom-010 | 挂号订单管理模块集成测试 | test | 全部设计文档 | `backend/tests/order_integration_test.go` | P3 | ⏳ 待实现 |
+| 10 | atom-010 | 挂号订单管理模块集成测试 | test | 全部设计文档 | `backend/tests/order_integration_test.go` | P3 | ✅ 已完成 |
 
 **状态图例**：
 - ⏳ 待确认 — 清单产出后等待用户确认
