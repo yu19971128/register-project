@@ -92,7 +92,8 @@ func (r *OrderRepository) ExistsByScheduleAndVisitor(scheduleID int64, visitorPh
 	return count > 0, nil
 }
 
-func (r *OrderRepository) List(date, department, doctorName, status string, offset, limit int, visitorPhone ...string) ([]*models.Order, int, error) {
+func (r *OrderRepository) List(date, department, doctorName, status, keyword string, offset, limit int, visitorPhone ...string) ([]*models.Order, int, error) {
+	joins := "LEFT JOIN schedules s ON o.schedule_id = s.id LEFT JOIN patients p ON o.patient_id = p.id"
 	where := []string{"1 = 1"}
 	args := []interface{}{}
 	if date != "" {
@@ -101,9 +102,22 @@ func (r *OrderRepository) List(date, department, doctorName, status string, offs
 		nextDate = nextDate.Add(24 * time.Hour)
 		args = append(args, date, nextDate.Format("2006-01-02"))
 	}
+	if department != "" {
+		where = append(where, "s.department = ?")
+		args = append(args, department)
+	}
+	if doctorName != "" {
+		where = append(where, "s.doctor_name = ?")
+		args = append(args, doctorName)
+	}
 	if status != "" {
 		where = append(where, "o.status = ?")
 		args = append(args, status)
+	}
+	if keyword != "" {
+		where = append(where, "(o.order_no LIKE ? OR p.name LIKE ?)")
+		k := "%" + keyword + "%"
+		args = append(args, k, k)
 	}
 	if len(visitorPhone) > 0 && visitorPhone[0] != "" {
 		where = append(where, "o.visitor_phone = ?")
@@ -113,14 +127,14 @@ func (r *OrderRepository) List(date, department, doctorName, status string, offs
 
 	var total int
 	countArgs := append([]interface{}{}, args...)
-	if err := r.db.QueryRow("SELECT COUNT(*) FROM orders o WHERE "+whereStr, countArgs...).Scan(&total); err != nil {
+	if err := r.db.QueryRow("SELECT COUNT(*) FROM orders o "+joins+" WHERE "+whereStr, countArgs...).Scan(&total); err != nil {
 		return nil, 0, fmt.Errorf("count orders: %w", err)
 	}
 
 	queryArgs := append([]interface{}{}, args...)
 	queryArgs = append(queryArgs, limit, offset)
 	rows, err := r.db.Query(
-		"SELECT o.id, o.order_no, o.schedule_id, o.patient_id, o.visitor_phone, o.status, o.cancel_reason, o.cancelled_at, o.completed_at, o.operated_by, o.created_at FROM orders o WHERE "+whereStr+" ORDER BY o.created_at DESC LIMIT ? OFFSET ?",
+		"SELECT o.id, o.order_no, o.schedule_id, o.patient_id, o.visitor_phone, o.status, o.cancel_reason, o.cancelled_at, o.completed_at, o.operated_by, o.created_at FROM orders o "+joins+" WHERE "+whereStr+" ORDER BY o.created_at DESC LIMIT ? OFFSET ?",
 		queryArgs...,
 	)
 	if err != nil {

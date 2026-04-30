@@ -14,6 +14,8 @@ import (
 func setupOrderRepo(t *testing.T) (*OrderRepository, func()) {
 	database, err := db.Open(":memory:")
 	require.NoError(t, err)
+	b0, _ := os.ReadFile("../migrations/001_create_patients.sql")
+	require.NoError(t, db.ExecMigration(database, string(b0)))
 	b1, _ := os.ReadFile("../migrations/002_create_schedules.sql")
 	require.NoError(t, db.ExecMigration(database, string(b1)))
 	b2, _ := os.ReadFile("../migrations/003_create_orders.sql")
@@ -86,18 +88,18 @@ func TestOrderRepository_List(t *testing.T) {
 	_, _ = r.Create(&models.Order{OrderNo: "GH20260429003", ScheduleID: 1, PatientID: 3, VisitorPhone: "13900139000", Status: "confirmed"})
 
 	// List all
-	list, total, err := r.List("", "", "", "", 0, 10)
+	list, total, err := r.List("", "", "", "", "", 0, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 3, total)
 	assert.Len(t, list, 3)
 
 	// Filter by status
-	list, total, err = r.List("", "", "", "confirmed", 0, 10)
+	list, total, err = r.List("", "", "", "confirmed", "", 0, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 2, total)
 
 	// Filter by visitor phone
-	list, total, err = r.List("", "", "", "", 0, 10, "13800138000")
+	list, total, err = r.List("", "", "", "", "", 0, 10, "13800138000")
 	require.NoError(t, err)
 	assert.Equal(t, 2, total)
 }
