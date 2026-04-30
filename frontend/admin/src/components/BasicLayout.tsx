@@ -1,5 +1,5 @@
 import { Layout, Menu } from 'antd'
-import { UserOutlined, MedicineBoxOutlined } from '@ant-design/icons'
+import { UserOutlined, MedicineBoxOutlined, FileTextOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 const { Header, Sider, Content } = Layout
@@ -11,6 +11,7 @@ export default function BasicLayout({ children }: { children: React.ReactNode })
   const menuItems = [
     { key: '/patients', icon: <UserOutlined />, label: '就诊人管理' },
     { key: '/schedules', icon: <MedicineBoxOutlined />, label: '号源管理' },
+    { key: '/orders', icon: <FileTextOutlined />, label: '挂号订单' },
   ]
 
   return (

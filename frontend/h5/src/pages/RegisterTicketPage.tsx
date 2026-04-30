@@ -8,7 +8,6 @@ export default function RegisterTicketPage() {
   const [searchParams] = useSearchParams()
   const orderNo = searchParams.get('order_no') || ''
   const [ticket, setTicket] = useState<TicketResult | null>(null)
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!orderNo) return
@@ -16,14 +15,11 @@ export default function RegisterTicketPage() {
   }, [orderNo])
 
   const loadTicket = async () => {
-    setLoading(true)
     try {
       const t = await registrationApi.getTicket(orderNo)
       setTicket(t)
     } catch (e: any) {
       Toast.show({ content: e.message || '加载失败', icon: 'fail' })
-    } finally {
-      setLoading(false)
     }
   }
 

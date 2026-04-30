@@ -120,6 +120,42 @@ export const scheduleApi = {
   },
 }
 
+export interface Order {
+  id: number
+  order_no: string
+  patient_name: string
+  department: string
+  doctor_name: string
+  date: string
+  start_time: string
+  end_time: string
+  status: string
+  created_at: string
+}
+
+export interface OrderDetail {
+  id: number
+  order_no: string
+  status: string
+  schedule: {
+    id: number
+    department: string
+    doctor_name: string
+    date: string
+    start_time: string
+    end_time: string
+  }
+  patient: {
+    id: number
+    name: string
+    gender: string
+    age: number
+  }
+  visitor_phone: string
+  created_at: string
+  updated_at: string
+}
+
 export const registrationApi = {
   submit(schedule_id: number, patient_id: number, visitor_phone: string): Promise<RegistrationResult> {
     return request('/registrations', {
@@ -129,5 +165,20 @@ export const registrationApi = {
   },
   getTicket(order_no: string): Promise<TicketResult> {
     return request(`/registrations/ticket/${order_no}`)
+  },
+}
+
+export const orderApi = {
+  list(): Promise<{ total: number; list: Order[] }> {
+    return request('/orders')
+  },
+  get(id: number): Promise<OrderDetail> {
+    return request(`/orders/${id}`)
+  },
+  cancel(id: number, reason?: string): Promise<{ id: number; order_no: string; status: string; cancelled_at?: string }> {
+    return request(`/orders/${id}/cancel`, { method: 'PUT', body: JSON.stringify({ reason }) })
+  },
+  change(id: number, new_schedule_id: number): Promise<OrderDetail> {
+    return request(`/orders/${id}/change`, { method: 'PUT', body: JSON.stringify({ new_schedule_id }) })
   },
 }

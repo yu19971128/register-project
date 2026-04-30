@@ -77,6 +77,42 @@ export const patientApi = {
   },
 }
 
+export interface Order {
+  id: number
+  order_no: string
+  patient_name: string
+  department: string
+  doctor_name: string
+  date: string
+  start_time: string
+  end_time: string
+  status: string
+  created_at: string
+}
+
+export interface OrderDetail {
+  id: number
+  order_no: string
+  status: string
+  schedule: {
+    id: number
+    department: string
+    doctor_name: string
+    date: string
+    start_time: string
+    end_time: string
+  }
+  patient: {
+    id: number
+    name: string
+    gender: string
+    age: number
+  }
+  visitor_phone: string
+  created_at: string
+  updated_at: string
+}
+
 export const scheduleApi = {
   list(date: string, page = 1, pageSize = 10): Promise<{ total: number; list: Schedule[] }> {
     const qs = new URLSearchParams({ page: String(page), page_size: String(pageSize), date })
@@ -93,5 +129,27 @@ export const scheduleApi = {
   },
   remove(id: number): Promise<void> {
     return request(`/schedules/${id}`, { method: 'DELETE' })
+  },
+}
+
+export const orderApi = {
+  list(params?: { keyword?: string; status?: string; date?: string; department?: string; page?: number; pageSize?: number }): Promise<{ total: number; list: Order[] }> {
+    const qs = new URLSearchParams()
+    if (params?.keyword) qs.set('keyword', params.keyword)
+    if (params?.status) qs.set('status', params.status)
+    if (params?.date) qs.set('date', params.date)
+    if (params?.department) qs.set('department', params.department)
+    qs.set('page', String(params?.page || 1))
+    qs.set('page_size', String(params?.pageSize || 10))
+    return request(`/orders?${qs.toString()}`)
+  },
+  get(id: number): Promise<OrderDetail> {
+    return request(`/orders/${id}`)
+  },
+  cancel(id: number, reason?: string): Promise<{ id: number; order_no: string; status: string }> {
+    return request(`/orders/${id}/cancel`, { method: 'PUT', body: JSON.stringify({ reason }) })
+  },
+  change(id: number, new_schedule_id: number): Promise<OrderDetail> {
+    return request(`/orders/${id}/change`, { method: 'PUT', body: JSON.stringify({ new_schedule_id }) })
   },
 }

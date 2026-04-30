@@ -4,6 +4,8 @@ import PatientListPage from './pages/PatientListPage'
 import PatientDetailPage from './pages/PatientDetailPage'
 import ScheduleListPage from './pages/ScheduleListPage'
 import ScheduleEditPage from './pages/ScheduleEditPage'
+import OrderListPage from './pages/OrderListPage'
+import OrderDetailPage from './pages/OrderDetailPage'
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/patients/:id" element={<PatientDetailPage />} />
         <Route path="/schedules" element={<ScheduleListPage />} />
         <Route path="/schedules/edit" element={<ScheduleEditPage />} />
+        <Route path="/orders" element={<OrderListPage />} />
+        <Route path="/orders/:id" element={<OrderDetailPage />} />
       </Routes>
     </BasicLayout>
   )
