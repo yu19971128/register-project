@@ -27,6 +27,9 @@ func Setup(db *sql.DB) *gin.Engine {
 	regSvc := service.NewRegistrationService(db, patientRepo, scheduleRepo, orderRepo)
 	regHandler := handler.NewRegistrationHandler(regSvc)
 
+	orderSvc := service.NewOrderService(db, orderRepo, scheduleRepo, patientRepo)
+	orderHandler := handler.NewOrderHandler(orderSvc)
+
 	// H5 API group — visitor phone auth
 	h5 := r.Group("/api/v1")
 	h5.Use(middleware.VisitorPhone())
@@ -41,6 +44,11 @@ func Setup(db *sql.DB) *gin.Engine {
 
 	h5.POST("/registrations", regHandler.Submit)
 	h5.GET("/registrations/ticket/:order_no", regHandler.GetTicket)
+
+	h5.GET("/orders", orderHandler.List)
+	h5.GET("/orders/:id", orderHandler.Get)
+	h5.PUT("/orders/:id/cancel", orderHandler.Cancel)
+	h5.PUT("/orders/:id/change", orderHandler.Change)
 
 	// Admin API group — JWT auth
 	admin := r.Group("/api/v1/admin")
@@ -57,6 +65,11 @@ func Setup(db *sql.DB) *gin.Engine {
 	admin.DELETE("/schedules/:id", scheduleHandler.Delete)
 	admin.POST("/schedules/:id/deduct", scheduleHandler.Deduct)
 	admin.POST("/schedules/:id/rollback", scheduleHandler.Rollback)
+
+	admin.GET("/orders", orderHandler.List)
+	admin.GET("/orders/:id", orderHandler.Get)
+	admin.PUT("/orders/:id/cancel", orderHandler.Cancel)
+	admin.PUT("/orders/:id/change", orderHandler.Change)
 
 	return r
 }

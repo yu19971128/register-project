@@ -32,6 +32,10 @@ func setupRouter(t *testing.T) *gin.Engine {
 	if err := db.ExecMigration(database, string(b3)); err != nil {
 		t.Fatalf("migrate orders: %v", err)
 	}
+	b4, _ := os.ReadFile("../migrations/004_alter_orders.sql")
+	if err := db.ExecMigration(database, string(b4)); err != nil {
+		t.Fatalf("migrate orders alter: %v", err)
+	}
 	return Setup(database)
 }
 
@@ -170,5 +174,36 @@ func TestRouter_RegistrationRoutes_Registered(t *testing.T) {
 	// Will fail due to missing seed data but verifies route is registered
 	if w.Code != http.StatusBadRequest {
 		t.Fatalf("submit with visitor phone status = %d, want 400 (patient not found)", w.Code)
+	}
+}
+
+func TestRouter_OrderRoutes_Registered(t *testing.T) {
+	r := setupRouter(t)
+
+	// H5 list orders (no seed data, should return empty list)
+	req, _ := http.NewRequest("GET", "/api/v1/orders", nil)
+	req.Header.Set("X-Visitor-Phone", "13800138000")
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("h5 list orders status = %d, want 200, body: %s", w.Code, w.Body.String())
+	}
+
+	// Admin list orders without token should fail
+	req, _ = http.NewRequest("GET", "/api/v1/admin/orders", nil)
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusUnauthorized {
+		t.Fatalf("admin list orders without token status = %d, want 401", w.Code)
+	}
+
+	// Admin list orders with token
+	token, _ := middleware.GenerateToken("admin-1")
+	req, _ = http.NewRequest("GET", "/api/v1/admin/orders", nil)
+	req.Header.Set("Authorization", "Bearer "+token)
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("admin list orders status = %d, want 200, body: %s", w.Code, w.Body.String())
 	}
 }

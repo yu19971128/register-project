@@ -49,7 +49,7 @@
 | 1 | atom-001 | 扩展 orders 表字段 | db | `docs/05-database/schemas/order.md` | `backend/migrations/004_alter_orders.sql` | P3 | ✅ 已完成 |
 | 2 | atom-002 | 扩展 OrderRepository 查询与状态更新 | repo | `docs/02-modules/order/README.md` + `docs/05-database/schemas/order.md` | `backend/repo/order_repo.go`（追加方法）+ `order_repo_test.go` | P3 | ✅ 已完成 |
 | 3 | atom-003 | 实现 OrderService 订单业务逻辑 | svc | `docs/02-modules/order/README.md` + `docs/06-api/order.md` | `backend/service/order_service.go` + `order_service_test.go` | P3 | ✅ 已完成 |
-| 4 | atom-004 | 实现 OrderHandler REST API | api | `docs/06-api/order.md` | `backend/handler/order_handler.go` + `order_handler_test.go` | P3 | ⏳ 待实现 |
+| 4 | atom-004 | 实现 OrderHandler REST API | api | `docs/06-api/order.md` | `backend/handler/order_handler.go` + `order_handler_test.go` | P3 | ✅ 已完成 |
 | 5 | atom-005 | 在路由中注册订单接口 | cfg | `docs/06-api/order.md` + `docs/03-architecture/README.md` | `backend/router/router.go`（追加注册） | P3 | ⏳ 待实现 |
 | 6 | atom-006 | 实现 H5 挂号记录列表页 | page | `docs/04-frontend/features/order.md` | `frontend/h5/pages/OrderListPage.tsx` | P3 | ⏳ 待实现 |
 | 7 | atom-007 | 实现 H5 订单详情页 | page | `docs/04-frontend/features/order.md` | `frontend/h5/pages/OrderDetailPage.tsx` | P3 | ⏳ 待实现 |
