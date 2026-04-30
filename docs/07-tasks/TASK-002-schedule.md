@@ -33,10 +33,10 @@
 
 ## 状态流转
 - [x] 规划中
-- [ ] 开发中
-- [ ] 审查中
-- [ ] 测试中
-- [ ] 已完成
+- [x] 开发中
+- [x] 审查中
+- [x] 测试中
+- [x] 已完成
 
 ## 原子任务清单（🔴 实现前必须确认，确认后冻结）
 
@@ -46,14 +46,14 @@
 
 | 序号 | 原子任务 ID | 任务名称 | 类型 | 输入设计文档 | 输出代码文件 | 优先级 | 状态 |
 |------|------------|---------|------|-------------|-------------|--------|------|
-| 1 | atom-001 | 创建 schedules 表迁移与模型 | db | `docs/05-database/schemas/schedule.md` | `backend/migrations/002_create_schedules.sql` + `backend/models/schedule.go` | P1 | ⏳ 待实现 |
-| 2 | atom-002 | 实现 ScheduleRepository CRUD | repo | `docs/02-modules/schedule/README.md` + `docs/05-database/schemas/schedule.md` | `backend/repo/schedule_repo.go` + `schedule_repo_test.go` | P1 | ⏳ 待实现 |
-| 3 | atom-003 | 实现 ScheduleService 含余量扣减回滚 | svc | `docs/02-modules/schedule/README.md` + `docs/06-api/schedule.md` | `backend/service/schedule_service.go` + `schedule_service_test.go` | P1 | ⏳ 待实现 |
-| 4 | atom-004 | 实现 ScheduleHandler REST API | api | `docs/06-api/schedule.md` | `backend/handler/schedule_handler.go` + `schedule_handler_test.go` | P1 | ⏳ 待实现 |
-| 5 | atom-005 | 在路由中注册号源接口 | cfg | `docs/06-api/schedule.md` + `docs/03-architecture/README.md` | `backend/router/router.go`（追加注册） | P1 | ⏳ 待实现 |
-| 6 | atom-006 | 实现管理端号源列表页 | page | `docs/04-frontend/features/schedule.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/ScheduleListPage.tsx` | P1 | ⏳ 待实现 |
-| 7 | atom-007 | 实现管理端添加/编辑号源页 | page | `docs/04-frontend/features/schedule.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/ScheduleEditPage.tsx` | P1 | ⏳ 待实现 |
-| 8 | atom-008 | 号源模块集成测试 | test | 全部设计文档 | `backend/tests/schedule_integration_test.go` | P1 | ⏳ 待实现 |
+| 1 | atom-001 | 创建 schedules 表迁移与模型 | db | `docs/05-database/schemas/schedule.md` | `backend/migrations/002_create_schedules.sql` + `backend/models/schedule.go` | P1 | ✅ 已完成 |
+| 2 | atom-002 | 实现 ScheduleRepository CRUD | repo | `docs/02-modules/schedule/README.md` + `docs/05-database/schemas/schedule.md` | `backend/repo/schedule_repo.go` + `schedule_repo_test.go` | P1 | ✅ 已完成 |
+| 3 | atom-003 | 实现 ScheduleService 含余量扣减回滚 | svc | `docs/02-modules/schedule/README.md` + `docs/06-api/schedule.md` | `backend/service/schedule_service.go` + `schedule_service_test.go` | P1 | ✅ 已完成 |
+| 4 | atom-004 | 实现 ScheduleHandler REST API | api | `docs/06-api/schedule.md` | `backend/handler/schedule_handler.go` + `schedule_handler_test.go` | P1 | ✅ 已完成 |
+| 5 | atom-005 | 在路由中注册号源接口 | cfg | `docs/06-api/schedule.md` + `docs/03-architecture/README.md` | `backend/router/router.go`（追加注册） | P1 | ✅ 已完成 |
+| 6 | atom-006 | 实现管理端号源列表页 | page | `docs/04-frontend/features/schedule.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/ScheduleListPage.tsx` | P1 | ✅ 已完成 |
+| 7 | atom-007 | 实现管理端添加/编辑号源页 | page | `docs/04-frontend/features/schedule.md` + `docs/04-frontend/layout.md` | `frontend/admin/pages/ScheduleEditPage.tsx` | P1 | ✅ 已完成 |
+| 8 | atom-008 | 号源模块集成测试 | test | 全部设计文档 | `backend/tests/schedule_integration_test.go` | P1 | ✅ 已完成 |
 
 **状态图例**：
 - ⏳ 待确认 — 清单产出后等待用户确认
