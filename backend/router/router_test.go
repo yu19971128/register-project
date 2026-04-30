@@ -28,6 +28,10 @@ func setupRouter(t *testing.T) *gin.Engine {
 	if err := db.ExecMigration(database, string(b2)); err != nil {
 		t.Fatalf("migrate schedules: %v", err)
 	}
+	b3, _ := os.ReadFile("../migrations/003_create_orders.sql")
+	if err := db.ExecMigration(database, string(b3)); err != nil {
+		t.Fatalf("migrate orders: %v", err)
+	}
 	return Setup(database)
 }
 
@@ -140,5 +144,31 @@ func TestRouter_ScheduleRoutes_Registered(t *testing.T) {
 	r.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
 		t.Fatalf("admin list schedules status = %d, want 200", w.Code)
+	}
+}
+
+func TestRouter_RegistrationRoutes_Registered(t *testing.T) {
+	r := setupRouter(t)
+
+	// Submit without visitor phone should fail (middleware rejects)
+	body := `{"schedule_id":1,"patient_id":1,"visitor_phone":"13800138000"}`
+	req, _ := http.NewRequest("POST", "/api/v1/registrations", bytes.NewBufferString(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	// Expect 400 because no X-Visitor-Phone header (VisitorPhone middleware will set empty)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("submit without visitor phone status = %d, want 400", w.Code)
+	}
+
+	// Submit with visitor phone
+	req, _ = http.NewRequest("POST", "/api/v1/registrations", bytes.NewBufferString(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Visitor-Phone", "13800138000")
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	// Will fail due to missing seed data but verifies route is registered
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("submit with visitor phone status = %d, want 400 (patient not found)", w.Code)
 	}
 }
