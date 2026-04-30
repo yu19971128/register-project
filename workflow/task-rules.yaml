@@ -1,0 +1,26 @@
+task_card_required_sections:
+  - 基础信息
+  - 需求描述
+  - 验收标准（AC）
+  - 技术约束
+  - 测试流程
+  - 状态流转
+  - 原子任务清单
+
+atom_task_required_columns:
+  - 序号
+  - 原子任务 ID
+  - 任务名称
+  - 类型
+  - 输入设计文档
+  - 输出代码文件
+  - 优先级
+  - 状态
+
+atom_task_valid_statuses:
+  - ⏳ 待确认
+  - ⏳ 待实现
+  - 🔴 Red 已完成
+  - 🟢 Green 已完成
+  - ✅ 已完成
+  - ⏸️ 已跳过

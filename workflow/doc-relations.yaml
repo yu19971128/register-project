@@ -1,0 +1,37 @@
+index:
+  file: docs/00-index.md
+  required_columns:
+    - 功能点/需求
+    - feature_id
+    - 优先级
+    - 需求文档
+    - 模块设计
+    - 前端设计
+    - 数据库设计
+    - API 文档
+    - 当前状态
+    - 任务拆解
+module_docs:
+  root: docs/02-modules
+  file_pattern: docs/02-modules/<module>/README.md
+  required_frontmatter:
+    - module_id
+    - module_name
+    - feature_ids
+    - status
+  required_sections:
+    - 职责
+    - 边界
+    - 依赖模块
+    - 关联功能点
+    - 当前状态
+relations:
+  - source: docs/00-index.md.feature_id
+    target: docs/02-modules/<module>/README.md.feature_ids
+    rule: 双向可追踪
+  - source: docs/00-index.md.模块设计
+    target: docs/02-modules/<module>/README.md
+    rule: 索引登记的模块文档必须存在
+  - source: docs/07-tasks/TASK-*.md
+    target: docs/00-index.md.任务拆解
+    rule: 任务文档与功能点必须关联

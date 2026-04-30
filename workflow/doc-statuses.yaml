@@ -1,0 +1,40 @@
+statuses:
+  - key: clarifying
+    icon: "📝"
+    label: "需求澄清中"
+    description: "正在收集需求、确认功能范围"
+  - key: designing
+    icon: "🎨"
+    label: "设计中"
+    description: "正在进行模块拆分、接口契约、前端或数据库设计"
+  - key: design_done
+    icon: "✅"
+    label: "设计已完成"
+    description: "该功能点的设计文档已产出并确认"
+  - key: developing
+    icon: "🔨"
+    label: "开发中"
+    description: "正在执行实现与联调"
+  - key: testing
+    icon: "🧪"
+    label: "测试中"
+    description: "代码已实现，正在执行 QA 或集成测试"
+  - key: done
+    icon: "🏁"
+    label: "已完成"
+    description: "代码已交付，测试通过"
+
+valid_status_labels:
+  - "📝 需求澄清中"
+  - "🎨 设计中"
+  - "✅ 设计已完成"
+  - "🔨 开发中"
+  - "🧪 测试中"
+  - "🏁 已完成"
+
+status_projection:
+  module_split_only: "🎨 设计中"
+  design_docs_complete: "✅ 设计已完成"
+  task_started: "🔨 开发中"
+  qa_started: "🧪 测试中"
+  delivery_complete: "🏁 已完成"

@@ -1,0 +1,28 @@
+frontend_entry_docs:
+  - docs/04-frontend/README.md
+  - docs/04-frontend/layout.md
+  - docs/04-frontend/features/<feature>.md
+  - KNOWLEDGE.md
+
+allowed_component_libs:
+  - antd@5
+  - antd-mobile@5
+allowed_style_libs:
+  - Tailwind CSS@3
+allowed_icon_libs:
+  - "@ant-design/icons"
+forbidden_handmade_components:
+  - Button
+  - Modal
+  - Drawer
+  - Table
+  - Card
+  - Tabs
+  - Form
+  - Select
+
+must_have_design_doc_for:
+  - new_page
+  - new_route
+  - complex_component
+  - admin_layout

@@ -1,0 +1,23 @@
+mock_policy:
+  requires_user_confirmation: true
+  must_record_in:
+    - DECISIONS.md
+    - docs/07-tasks/TASK-*.md
+
+delivery_policy:
+  requires_e2e_evidence: true
+  allowed_waiver: user_approved_only
+
+phase_exit_gates:
+  design:
+    - docs/00-index.md updated
+    - all module README.md have frontmatter
+    - API contracts written
+  implementation:
+    - Task Card exists
+    - atom-task list confirmed
+    - plan written
+  qa:
+    - unit_test_coverage >= 80
+    - integration_tests_pass
+    - review_passed
