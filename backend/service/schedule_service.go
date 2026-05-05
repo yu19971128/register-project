@@ -30,7 +30,10 @@ func (s *ScheduleService) ListSchedules(date, department string, page, pageSize 
 	if page < 1 {
 		page = 1
 	}
-	if pageSize < 1 || pageSize > 100 {
+	if pageSize == 0 {
+		return s.repo.List(date, department, 0, 0)
+	}
+	if pageSize < 0 || pageSize > 100 {
 		pageSize = 20
 	}
 	return s.repo.List(date, department, (page-1)*pageSize, pageSize)

@@ -60,12 +60,21 @@ func (r *ScheduleRepository) List(date, department string, offset, limit int) ([
 		return nil, 0, fmt.Errorf("count schedules: %w", err)
 	}
 
-	queryArgs := append([]interface{}{}, args...)
-	queryArgs = append(queryArgs, limit, offset)
-	rows, err := r.db.Query(
-		"SELECT id, date, department, doctor_name, start_time, end_time, total_quota, remaining, status, created_at FROM schedules WHERE "+whereStr+" ORDER BY start_time ASC LIMIT ? OFFSET ?",
-		queryArgs...,
-	)
+	var rows *sql.Rows
+	var err error
+	if limit <= 0 {
+		rows, err = r.db.Query(
+			"SELECT id, date, department, doctor_name, start_time, end_time, total_quota, remaining, status, created_at FROM schedules WHERE "+whereStr+" ORDER BY start_time ASC",
+			args...,
+		)
+	} else {
+		queryArgs := append([]interface{}{}, args...)
+		queryArgs = append(queryArgs, limit, offset)
+		rows, err = r.db.Query(
+			"SELECT id, date, department, doctor_name, start_time, end_time, total_quota, remaining, status, created_at FROM schedules WHERE "+whereStr+" ORDER BY start_time ASC LIMIT ? OFFSET ?",
+			queryArgs...,
+		)
+	}
 	if err != nil {
 		return nil, 0, fmt.Errorf("list schedules: %w", err)
 	}

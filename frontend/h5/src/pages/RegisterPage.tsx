@@ -44,7 +44,9 @@ export default function RegisterPage() {
     loadSchedules()
   }
 
-  const filtered = activeDept === '全部' ? schedules : schedules.filter(s => s.department === activeDept)
+  const now = dayjs()
+  const notExpired = schedules.filter(s => dayjs(`${s.date}T${s.end_time}`).isAfter(now))
+  const filtered = activeDept === '全部' ? notExpired : notExpired.filter(s => s.department === activeDept)
 
   return (
     <div className="min-h-screen bg-gray-50">

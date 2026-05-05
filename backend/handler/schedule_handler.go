@@ -46,6 +46,9 @@ func (h *ScheduleHandler) Create(c *gin.Context) {
 
 func (h *ScheduleHandler) List(c *gin.Context) {
 	page, pageSize := ParsePage(c)
+	if c.Query("page_size") == "0" {
+		pageSize = 0
+	}
 	date := c.Query("date")
 	if date == "" {
 		date = c.GetString("schedule_date")

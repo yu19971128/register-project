@@ -112,8 +112,9 @@ export const patientApi = {
 }
 
 export const scheduleApi = {
-  list(date: string): Promise<{ total: number; list: Schedule[] }> {
-    return request(`/schedules?date=${date}`)
+  list(date: string, page = 1, pageSize = 0): Promise<{ total: number; list: Schedule[] }> {
+    const qs = new URLSearchParams({ page: String(page), page_size: String(pageSize), date })
+    return request(`/schedules?${qs.toString()}`)
   },
   get(id: number): Promise<Schedule> {
     return request(`/schedules/${id}`)
