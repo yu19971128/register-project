@@ -54,7 +54,8 @@ func (h *ScheduleHandler) List(c *gin.Context) {
 		date = c.GetString("schedule_date")
 	}
 	department := c.Query("department")
-	list, total, err := h.svc.ListSchedules(date, department, page, pageSize)
+	doctorName := c.Query("doctor_name")
+	list, total, err := h.svc.ListSchedules(date, department, doctorName, page, pageSize)
 	if err != nil {
 		Error(c, http.StatusInternalServerError, err.Error())
 		return

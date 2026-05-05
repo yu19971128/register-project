@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { NavBar, Card, Button, Dialog, Toast, Tag } from 'antd-mobile'
-import { orderApi, type OrderDetail } from '../api/client'
+import { orderApi, registrationApi, type OrderDetail, type TicketResult } from '../api/client'
 
 const statusMap: Record<string, { text: string; color: string }> = {
   confirmed: { text: '待就诊', color: 'primary' },
@@ -13,11 +13,22 @@ export default function OrderDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [order, setOrder] = useState<OrderDetail | null>(null)
+  const [ticket, setTicket] = useState<TicketResult | null>(null)
 
   const load = async () => {
     try {
       const res = await orderApi.get(Number(id))
       setOrder(res)
+      if (res.status === 'confirmed') {
+        try {
+          const t = await registrationApi.getTicket(res.order_no)
+          setTicket(t)
+        } catch {
+          setTicket(null)
+        }
+      } else {
+        setTicket(null)
+      }
     } catch (e: any) {
       Toast.show({ content: e.message || '加载失败', position: 'bottom' })
     }
@@ -26,6 +37,14 @@ export default function OrderDetailPage() {
   useEffect(() => {
     load()
   }, [id])
+
+  const qrPattern = useMemo(
+    () =>
+      Array.from({ length: 8 }, () =>
+        Array.from({ length: 8 }, () => Math.random() > 0.5),
+      ),
+    [order?.order_no],
+  )
 
   const handleCancel = () => {
     if (!order) return
@@ -81,9 +100,41 @@ export default function OrderDetailPage() {
         </Card>
 
         {order.status === 'confirmed' && (
-          <Button color="danger" block onClick={handleCancel}>
-            申请退号
-          </Button>
+          <>
+            <Card title="就诊二维码">
+              <div className="flex flex-col items-center py-2">
+                <div className="w-32 h-32 bg-gray-900 flex items-center justify-center mb-3">
+                  <div className="text-center leading-tight">
+                    {qrPattern.map((row, i) => (
+                      <div key={i} className="flex justify-center">
+                        {row.map((on, j) => (
+                          <span
+                            key={j}
+                            className={`inline-block w-3 h-3 ${on ? 'bg-white' : 'bg-transparent'}`}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500">订单号：{order.order_no}</div>
+              </div>
+            </Card>
+
+            {ticket?.notice && ticket.notice.length > 0 && (
+              <Card title="温馨提示">
+                <div className="space-y-1 text-sm text-gray-600">
+                  {ticket.notice.map((n, i) => (
+                    <div key={i}>{i + 1}. {n}</div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            <Button color="danger" block onClick={handleCancel}>
+              申请退号
+            </Button>
+          </>
         )}
       </div>
     </div>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Card, Form, Input, DatePicker, TimePicker, Button, InputNumber, message, Space } from 'antd'
+import { Card, Form, Select, DatePicker, TimePicker, Button, InputNumber, message, Space } from 'antd'
 import { scheduleApi } from '../api/client'
+import { DEPARTMENT_DOCTORS, DEPARTMENT_OPTIONS } from '../constants/departments'
 import dayjs from 'dayjs'
 
 interface FormValues {
@@ -19,6 +20,8 @@ export default function ScheduleEditPage() {
   const [form] = Form.useForm<FormValues>()
   const [loading, setLoading] = useState(false)
   const isEdit = !!id
+  const department = Form.useWatch('department', form)
+  const doctorOptions = (DEPARTMENT_DOCTORS[department] || []).map(d => ({ label: d, value: d }))
 
   useEffect(() => {
     if (!id) return
@@ -69,11 +72,19 @@ export default function ScheduleEditPage() {
         <Form.Item name="date" label="出诊日期" rules={[{ required: true, message: '请选择出诊日期' }]}>
           <DatePicker style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item name="department" label="科室" rules={[{ required: true, message: '请输入科室' }]}>
-          <Input placeholder="请输入科室" />
+        <Form.Item name="department" label="科室" rules={[{ required: true, message: '请选择科室' }]}>
+          <Select
+            placeholder="请选择科室"
+            options={DEPARTMENT_OPTIONS}
+            onChange={() => form.setFieldValue('doctor_name', undefined)}
+          />
         </Form.Item>
-        <Form.Item name="doctor_name" label="医生" rules={[{ required: true, message: '请输入医生姓名' }]}>
-          <Input placeholder="请输入医生姓名" />
+        <Form.Item name="doctor_name" label="医生" rules={[{ required: true, message: '请选择医生' }]}>
+          <Select
+            placeholder={department ? '请选择医生' : '请先选择科室'}
+            options={doctorOptions}
+            disabled={!department}
+          />
         </Form.Item>
         <Form.Item name="timeRange" label="时间段" rules={[{ required: true, message: '请选择时间段' }]}>
           <TimePicker.RangePicker format="HH:mm" style={{ width: '100%' }} />

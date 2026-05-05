@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"time"
 
 	"clinic/db"
@@ -34,13 +35,14 @@ func main() {
 		start string
 		end   string
 	}{
-		{"08:00", "12:00"},
-		{"14:00", "17:00"},
+		{"08:00", "12:00"}, // 上午
+		{"12:00", "18:00"}, // 下午
+		{"18:00", "20:00"}, // 晚上
 	}
 
-	// From today (2026-04-30) to 2026-05-15
-	startDate := time.Date(2026, 4, 30, 0, 0, 0, 0, time.UTC)
-	endDate := time.Date(2026, 5, 15, 0, 0, 0, 0, time.UTC)
+	// 2026-05-05 to 2026-05-30 inclusive
+	startDate := time.Date(2026, 5, 5, 0, 0, 0, 0, time.UTC)
+	endDate := time.Date(2026, 5, 30, 0, 0, 0, 0, time.UTC)
 
 	stmt, err := database.Prepare(`
 		INSERT INTO schedules (date, department, doctor_name, start_time, end_time, total_quota, remaining, status)
@@ -56,13 +58,10 @@ func main() {
 		dateStr := d.Format("2006-01-02")
 		for _, dept := range departments {
 			for _, slot := range slots {
-				quota := 20
-				if dept.dept == "泌尿外科" || dept.dept == "内科" {
-					quota = 30
-				}
+				quota := 10 + rand.Intn(21) // [10, 30]
 				_, err := stmt.Exec(dateStr, dept.dept, dept.doctor, slot.start, slot.end, quota, quota)
 				if err != nil {
-					log.Printf("skip %s %s %s: %v", dateStr, dept.dept, dept.doctor, err)
+					log.Printf("skip %s %s %s %s-%s: %v", dateStr, dept.dept, dept.doctor, slot.start, slot.end, err)
 					continue
 				}
 				count++

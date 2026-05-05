@@ -46,13 +46,21 @@ func TestScheduleRepository_Create_Get_List_Update_Delete(t *testing.T) {
 	assert.Equal(t, 20, got.Remaining)
 
 	// List
-	list, total, err := r.List("2026-04-29", "", 0, 10)
+	list, total, err := r.List("2026-04-29", "", "", 0, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 1, total)
 	assert.Len(t, list, 1)
 
 	// List with department filter
-	list, total, err = r.List("2026-04-29", "外科", 0, 10)
+	list, total, err = r.List("2026-04-29", "外科", "", 0, 10)
+	require.NoError(t, err)
+	assert.Equal(t, 0, total)
+
+	// List with doctor filter
+	_, total, err = r.List("2026-04-29", "", "王医生", 0, 10)
+	require.NoError(t, err)
+	assert.Equal(t, 1, total)
+	_, total, err = r.List("2026-04-29", "", "李医生", 0, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 0, total)
 

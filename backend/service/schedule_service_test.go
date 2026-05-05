@@ -45,15 +45,20 @@ func TestScheduleService_List(t *testing.T) {
 	_, _ = svc.CreateSchedule(&models.Schedule{Date: "2026-04-29", Department: "内科", DoctorName: "A", StartTime: "08:00", EndTime: "09:00", TotalQuota: 10})
 	_, _ = svc.CreateSchedule(&models.Schedule{Date: "2026-04-29", Department: "外科", DoctorName: "B", StartTime: "09:00", EndTime: "10:00", TotalQuota: 10})
 
-	list, total, err := svc.ListSchedules("2026-04-29", "", 1, 10)
+	list, total, err := svc.ListSchedules("2026-04-29", "", "", 1, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 2, total)
 	assert.Len(t, list, 2)
 
-	list, total, err = svc.ListSchedules("2026-04-29", "外科", 1, 10)
+	list, total, err = svc.ListSchedules("2026-04-29", "外科", "", 1, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 1, total)
 	assert.Equal(t, "外科", list[0].Department)
+
+	list, total, err = svc.ListSchedules("2026-04-29", "", "A", 1, 10)
+	require.NoError(t, err)
+	assert.Equal(t, 1, total)
+	assert.Equal(t, "A", list[0].DoctorName)
 }
 
 func TestScheduleService_Get(t *testing.T) {

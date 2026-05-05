@@ -26,17 +26,17 @@ func (s *ScheduleService) CreateSchedule(schedule *models.Schedule) (*models.Sch
 	return schedule, nil
 }
 
-func (s *ScheduleService) ListSchedules(date, department string, page, pageSize int) ([]*models.Schedule, int, error) {
+func (s *ScheduleService) ListSchedules(date, department, doctorName string, page, pageSize int) ([]*models.Schedule, int, error) {
 	if page < 1 {
 		page = 1
 	}
 	if pageSize == 0 {
-		return s.repo.List(date, department, 0, 0)
+		return s.repo.List(date, department, doctorName, 0, 0)
 	}
 	if pageSize < 0 || pageSize > 100 {
 		pageSize = 20
 	}
-	return s.repo.List(date, department, (page-1)*pageSize, pageSize)
+	return s.repo.List(date, department, doctorName, (page-1)*pageSize, pageSize)
 }
 
 func (s *ScheduleService) GetSchedule(id int64) (*models.Schedule, error) {
@@ -62,9 +62,13 @@ func (s *ScheduleService) UpdateSchedule(schedule *models.Schedule) error {
 	if schedule.TotalQuota > 0 && schedule.TotalQuota < booked {
 		return fmt.Errorf("总号数不得小于已预约数 %d", booked)
 	}
-	// adjust remaining if total_quota increased
-	if schedule.TotalQuota > existing.TotalQuota {
-		schedule.Remaining = existing.Remaining + (schedule.TotalQuota - existing.TotalQuota)
+	// Whenever total_quota is provided, recompute remaining from booking count
+	// so it stays consistent regardless of whether quota increased or decreased.
+	// Otherwise preserve the existing remaining (zero-value would otherwise overwrite it).
+	if schedule.TotalQuota > 0 {
+		schedule.Remaining = schedule.TotalQuota - booked
+	} else {
+		schedule.Remaining = existing.Remaining
 	}
 	return s.repo.Update(schedule)
 }

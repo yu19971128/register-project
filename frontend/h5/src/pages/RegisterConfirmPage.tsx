@@ -24,7 +24,7 @@ export default function RegisterConfirmPage() {
       ])
       setSchedule(s)
       setPatients(p.list)
-      if (p.list.length > 0) {
+      if (p.list?.length > 0) {
         setSelectedPatientId(p.list[0].id)
       }
     } catch (e: any) {
@@ -67,7 +67,7 @@ export default function RegisterConfirmPage() {
         <div className="text-sm font-medium mb-2">选择就诊人 *</div>
         <Radio.Group value={selectedPatientId} onChange={(v) => setSelectedPatientId(v as number)}>
           <div className="space-y-3">
-            {patients.map(p => (
+            {patients?.map(p => (
               <Card key={p.id} className={selectedPatientId === p.id ? 'border-blue-500 border-l-4' : ''}>
                 <Radio value={p.id} className="w-full">
                   <div className="flex items-center gap-2 ml-2">

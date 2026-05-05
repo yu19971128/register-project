@@ -1,20 +1,25 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Table, Button, Space, Card, DatePicker, Tag, message } from 'antd'
+import { Table, Button, Space, Card, DatePicker, Tag, message, Select } from 'antd'
 import { scheduleApi, type Schedule } from '../api/client'
+import { DEPARTMENT_DOCTORS, DEPARTMENT_OPTIONS } from '../constants/departments'
 import dayjs from 'dayjs'
 
 export default function ScheduleListPage() {
   const [data, setData] = useState<Schedule[]>([])
   const [total, setTotal] = useState(0)
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'))
+  const [department, setDepartment] = useState('')
+  const [doctorName, setDoctorName] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const load = async (page = 1, pageSize = 10) => {
+  const doctorOptions = (department ? DEPARTMENT_DOCTORS[department] || [] : []).map(d => ({ label: d, value: d }))
+
+  const load = async (page = 1, pageSize = 10, currentDept = department, currentDoc = doctorName) => {
     setLoading(true)
     try {
-      const res = await scheduleApi.list(date, page, pageSize)
+      const res = await scheduleApi.list({ date, department: currentDept || undefined, doctor_name: currentDoc || undefined, page, pageSize })
       setData(res.list)
       setTotal(res.total)
     } catch (e: any) {
@@ -32,7 +37,7 @@ export default function ScheduleListPage() {
     try {
       await scheduleApi.remove(id)
       message.success('删除成功')
-      load()
+      load(1, 10, department, doctorName)
     } catch (e: any) {
       message.error(e.message || '删除失败')
     }
@@ -71,6 +76,39 @@ export default function ScheduleListPage() {
     <Card title="号源管理">
       <Space className="mb-4" wrap>
         <DatePicker value={dayjs(date)} onChange={(d) => setDate(d ? d.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD'))} />
+        <Select
+          placeholder="全部科室"
+          allowClear
+          style={{ width: 140 }}
+          value={department || undefined}
+          onChange={(v) => {
+            const d = v || ''
+            setDepartment(d)
+            setDoctorName('')
+            load(1, 10, d, '')
+          }}
+        >
+          {DEPARTMENT_OPTIONS.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>{opt.label}</Select.Option>
+          ))}
+        </Select>
+        <Select
+          placeholder={department ? '全部医生' : '请先选择科室'}
+          allowClear
+          style={{ width: 140 }}
+          disabled={!department}
+          value={doctorName || undefined}
+          onChange={(v) => {
+            const doc = v || ''
+            setDoctorName(doc)
+            load(1, 10, department, doc)
+          }}
+        >
+          {doctorOptions.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>{opt.label}</Select.Option>
+          ))}
+        </Select>
+        <Button onClick={() => { setDepartment(''); setDoctorName(''); load(1, 10, '', '') }}>重置</Button>
         <Button type="primary" onClick={() => navigate('/schedules/edit')}>+ 新增号源</Button>
       </Space>
       <Table

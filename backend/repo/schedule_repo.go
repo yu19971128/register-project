@@ -41,7 +41,7 @@ func (r *ScheduleRepository) GetByID(id int64) (*models.Schedule, error) {
 	return s, nil
 }
 
-func (r *ScheduleRepository) List(date, department string, offset, limit int) ([]*models.Schedule, int, error) {
+func (r *ScheduleRepository) List(date, department, doctorName string, offset, limit int) ([]*models.Schedule, int, error) {
 	where := []string{"1 = 1"}
 	args := []interface{}{}
 	if date != "" {
@@ -51,6 +51,10 @@ func (r *ScheduleRepository) List(date, department string, offset, limit int) ([
 	if department != "" {
 		where = append(where, "department = ?")
 		args = append(args, department)
+	}
+	if doctorName != "" {
+		where = append(where, "doctor_name = ?")
+		args = append(args, doctorName)
 	}
 	whereStr := strings.Join(where, " AND ")
 

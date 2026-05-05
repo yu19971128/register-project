@@ -114,8 +114,14 @@ export interface OrderDetail {
 }
 
 export const scheduleApi = {
-  list(date: string, page = 1, pageSize = 10): Promise<{ total: number; list: Schedule[] }> {
-    const qs = new URLSearchParams({ page: String(page), page_size: String(pageSize), date })
+  list(params: { date: string; department?: string; doctor_name?: string; page?: number; pageSize?: number }): Promise<{ total: number; list: Schedule[] }> {
+    const qs = new URLSearchParams({
+      page: String(params.page || 1),
+      page_size: String(params.pageSize || 10),
+      date: params.date,
+    })
+    if (params.department) qs.set('department', params.department)
+    if (params.doctor_name) qs.set('doctor_name', params.doctor_name)
     return request(`/schedules?${qs.toString()}`)
   },
   get(id: number): Promise<Schedule> {
