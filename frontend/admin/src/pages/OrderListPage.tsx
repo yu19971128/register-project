@@ -17,10 +17,10 @@ export default function OrderListPage() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const load = async (page = 1, pageSize = 10) => {
+  const load = async (page = 1, pageSize = 10, currentKeyword = keyword, currentStatus = status) => {
     setLoading(true)
     try {
-      const res = await orderApi.list({ keyword, status, page, pageSize })
+      const res = await orderApi.list({ keyword: currentKeyword, status: currentStatus, page, pageSize })
       setData(res.list)
       setTotal(res.total)
     } catch (e: any) {
@@ -81,13 +81,14 @@ export default function OrderListPage() {
         <Input.Search
           placeholder="搜索订单号/就诊人"
           allowClear
-          onSearch={(v) => { setKeyword(v); load(1, 10) }}
+          onSearch={(v) => { setKeyword(v); load(1, 10, v, status) }}
         />
         <Select
           placeholder="状态筛选"
           allowClear
           style={{ width: 120 }}
-          onChange={(v) => { setStatus(v || ''); load(1, 10) }}
+          value={status || undefined}
+          onChange={(v) => { const s = v || ''; setStatus(s); load(1, 10, keyword, s) }}
         >
           <Select.Option value="confirmed">待就诊</Select.Option>
           <Select.Option value="cancelled">已退号</Select.Option>

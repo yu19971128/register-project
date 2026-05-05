@@ -11,9 +11,11 @@ export default function BottomNav({ children }: { children: React.ReactNode }) {
     { key: '/h5/me', title: '个人中心', icon: <UserOutline /> },
   ]
 
-  const activeKey = tabs.some(t => location.pathname === t.key)
-    ? location.pathname
-    : '/h5/register'
+  const activeKey = location.pathname.startsWith('/h5/register')
+    ? '/h5/register'
+    : location.pathname.startsWith('/h5/me') || location.pathname.startsWith('/h5/patients') || location.pathname.startsWith('/h5/orders')
+      ? '/h5/me'
+      : '/h5/register'
 
   return (
     <div className="flex flex-col min-h-screen">

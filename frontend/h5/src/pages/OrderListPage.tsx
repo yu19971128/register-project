@@ -30,7 +30,7 @@ export default function OrderListPage() {
     <div className="min-h-screen bg-gray-100">
       <NavBar back={null}>挂号记录</NavBar>
       <List>
-        {orders.map((o) => (
+        {orders?.map((o) => (
           <List.Item
             key={o.id}
             title={
@@ -46,7 +46,7 @@ export default function OrderListPage() {
           />
         ))}
       </List>
-      {orders.length === 0 && (
+      {orders?.length === 0 && (
         <div className="p-8 text-center text-gray-400">暂无挂号记录</div>
       )}
     </div>
