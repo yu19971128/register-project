@@ -171,3 +171,14 @@ func (r *OrderRepository) UpdateStatus(id int64, status, reason string, cancelle
 	}
 	return nil
 }
+
+func (r *OrderRepository) Complete(id int64, completedAt time.Time, operatedBy string) error {
+	_, err := r.db.Exec(
+		"UPDATE orders SET status = ?, completed_at = ?, operated_by = ? WHERE id = ?",
+		"completed", completedAt, operatedBy, id,
+	)
+	if err != nil {
+		return fmt.Errorf("complete order: %w", err)
+	}
+	return nil
+}

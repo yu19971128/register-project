@@ -332,6 +332,35 @@ func (s *OrderService) Change(id, newScheduleID int64, isAdmin bool, visitorPhon
 	return result, nil
 }
 
+func (s *OrderService) Complete(id int64, isAdmin bool, visitorPhone, operatedBy string) (*OrderResult, error) {
+	order, err := s.orderRepo.GetByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("get order: %w", err)
+	}
+	if order == nil {
+		return nil, fmt.Errorf("订单不存在")
+	}
+
+	if !isAdmin && order.VisitorPhone != visitorPhone {
+		return nil, fmt.Errorf("无权完成订单")
+	}
+
+	if order.Status != "confirmed" {
+		return nil, fmt.Errorf("只有待就诊订单可以完成")
+	}
+
+	now := time.Now()
+	if err := s.orderRepo.Complete(id, now, operatedBy); err != nil {
+		return nil, err
+	}
+
+	return &OrderResult{
+		ID:      order.ID,
+		OrderNo: order.OrderNo,
+		Status:  "completed",
+	}, nil
+}
+
 func canCancelOrder(order *models.Order, schedule *models.Schedule) bool {
 	if order.Status != "confirmed" {
 		return false

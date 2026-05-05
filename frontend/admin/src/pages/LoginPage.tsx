@@ -25,7 +25,7 @@ export default function LoginPage() {
       }
       localStorage.setItem('admin_token', json.data.token)
       message.success('登录成功')
-      navigate('/patients')
+      window.location.replace('/patients')
     } catch (err: any) {
       message.error(err.message || '登录失败')
     } finally {
@@ -104,7 +104,7 @@ export default function LoginPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-slate-800">
-                诊所挂号系统
+                挂号系统
               </h1>
               <p className="text-sm text-slate-500">管理后台</p>
             </div>

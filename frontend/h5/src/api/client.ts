@@ -95,8 +95,7 @@ export interface TicketResult {
 
 export const patientApi = {
   list(): Promise<ListResp> {
-    // 就诊人列表不过滤 visitor_phone，兼容历史数据
-    return request('/patients', { headers: { 'X-Visitor-Phone': '' } })
+    return request('/patients')
   },
   get(id: number): Promise<Patient> {
     return request(`/patients/${id}`)

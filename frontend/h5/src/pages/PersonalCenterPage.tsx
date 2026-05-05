@@ -1,14 +1,44 @@
 import { useNavigate } from 'react-router-dom'
-import { NavBar, List, Button } from 'antd-mobile'
+import { NavBar, List, Button, Dialog, Input, Toast } from 'antd-mobile'
 import { UserOutline, FileOutline, RightOutline } from 'antd-mobile-icons'
 
 export default function PersonalCenterPage() {
   const navigate = useNavigate()
   const visitorPhone = localStorage.getItem('visitor_phone') || '-'
 
-  const handleLogout = () => {
-    localStorage.removeItem('visitor_phone')
-    window.location.reload()
+  const handleSwitchPhone = () => {
+    let phone = ''
+    const dialog = Dialog.show({
+      title: '切换手机号',
+      content: (
+        <Input
+          placeholder="请输入手机号"
+          onChange={(v) => { phone = v }}
+          maxLength={11}
+        />
+      ),
+      closeOnAction: false,
+      actions: [
+        [
+          { key: 'cancel', text: '取消', onClick: () => dialog.close() },
+          {
+            key: 'confirm',
+            text: '确认',
+            primary: true,
+            onClick: () => {
+              const trimmed = phone.trim()
+              if (!trimmed || !/^1[3-9]\d{9}$/.test(trimmed)) {
+                Toast.show({ content: '请输入正确的手机号', icon: 'fail' })
+                return
+              }
+              localStorage.setItem('visitor_phone', trimmed)
+              dialog.close()
+              window.location.reload()
+            },
+          },
+        ],
+      ],
+    })
   }
 
   return (
@@ -38,7 +68,7 @@ export default function PersonalCenterPage() {
       </List>
 
       <div className="p-4 mt-8">
-        <Button block color="danger" fill="outline" onClick={handleLogout}>
+        <Button block color="danger" fill="outline" onClick={handleSwitchPhone}>
           切换手机号
         </Button>
       </div>

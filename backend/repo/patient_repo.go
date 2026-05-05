@@ -60,7 +60,7 @@ func (r *PatientRepository) ListByVisitorPhone(vp string, offset, limit int) ([]
 		return nil, 0, fmt.Errorf("count patients: %w", err)
 	}
 	rows, err := r.db.Query(
-		`SELECT id, name, phone, gender, age, created_at FROM patients WHERE visitor_phone = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+		`SELECT id, name, id_card, phone, gender, age, created_at FROM patients WHERE visitor_phone = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
 		vp, limit, offset,
 	)
 	if err != nil {
@@ -87,12 +87,12 @@ func (r *PatientRepository) List(keyword string, offset, limit int) ([]*models.P
 	if keyword != "" {
 		k := "%" + keyword + "%"
 		rows, err = r.db.Query(
-			`SELECT id, name, phone, gender, age, created_at FROM patients WHERE name LIKE ? OR phone LIKE ? OR id_card LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+			`SELECT id, name, id_card, phone, gender, age, created_at FROM patients WHERE name LIKE ? OR phone LIKE ? OR id_card LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
 			k, k, k, limit, offset,
 		)
 	} else {
 		rows, err = r.db.Query(
-			`SELECT id, name, phone, gender, age, created_at FROM patients ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+			`SELECT id, name, id_card, phone, gender, age, created_at FROM patients ORDER BY created_at DESC LIMIT ? OFFSET ?`,
 			limit, offset,
 		)
 	}
@@ -107,7 +107,7 @@ func scanPatientList(rows *sql.Rows) []*models.Patient {
 	var list []*models.Patient
 	for rows.Next() {
 		p := &models.Patient{}
-		_ = rows.Scan(&p.ID, &p.Name, &p.Phone, &p.Gender, &p.Age, &p.CreatedAt)
+		_ = rows.Scan(&p.ID, &p.Name, &p.IDCard, &p.Phone, &p.Gender, &p.Age, &p.CreatedAt)
 		list = append(list, p)
 	}
 	return list

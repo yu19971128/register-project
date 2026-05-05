@@ -121,3 +121,27 @@ func (h *OrderHandler) Change(c *gin.Context) {
 	}
 	OK(c, res)
 }
+
+func (h *OrderHandler) Complete(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	isAdmin := c.GetString("admin_id") != ""
+	visitorPhone := c.GetString("visitor_phone")
+	operatedBy := c.GetString("admin_id")
+
+	res, err := h.svc.Complete(id, isAdmin, visitorPhone, operatedBy)
+	if err != nil {
+		msg := err.Error()
+		switch msg {
+		case "订单不存在":
+			Error(c, http.StatusNotFound, msg)
+		case "无权完成订单":
+			Error(c, http.StatusForbidden, msg)
+		case "只有待就诊订单可以完成":
+			Error(c, http.StatusBadRequest, msg)
+		default:
+			Error(c, http.StatusInternalServerError, msg)
+		}
+		return
+	}
+	OK(c, res)
+}

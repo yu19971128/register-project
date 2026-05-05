@@ -74,6 +74,7 @@ func Setup(db *sql.DB) *gin.Engine {
 	admin.GET("/orders/:id", orderHandler.Get)
 	admin.PUT("/orders/:id/cancel", orderHandler.Cancel)
 	admin.PUT("/orders/:id/change", orderHandler.Change)
+	admin.PUT("/orders/:id/complete", orderHandler.Complete)
 
 	return r
 }

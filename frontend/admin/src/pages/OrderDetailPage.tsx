@@ -38,6 +38,17 @@ export default function OrderDetailPage() {
     }
   }
 
+  const handleComplete = async () => {
+    if (!order) return
+    try {
+      await orderApi.complete(order.id)
+      message.success('订单已完成')
+      load()
+    } catch (e: any) {
+      message.error(e.message || '操作失败')
+    }
+  }
+
   if (!order) return null
 
   return (
@@ -71,7 +82,8 @@ export default function OrderDetailPage() {
       </Descriptions>
 
       {order.status === 'confirmed' && (
-        <div className="mt-4">
+        <div className="mt-4 space-x-3">
+          <Button type="primary" onClick={handleComplete}>完成</Button>
           <Button danger onClick={handleCancel}>退号</Button>
         </div>
       )}

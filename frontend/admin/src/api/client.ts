@@ -152,4 +152,7 @@ export const orderApi = {
   change(id: number, new_schedule_id: number): Promise<OrderDetail> {
     return request(`/orders/${id}/change`, { method: 'PUT', body: JSON.stringify({ new_schedule_id }) })
   },
+  complete(id: number): Promise<{ id: number; order_no: string; status: string }> {
+    return request(`/orders/${id}/complete`, { method: 'PUT' })
+  },
 }
